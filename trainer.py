@@ -1,4 +1,4 @@
-__author__ = 'yihanjiang'
+
 import torch
 import time
 import torch.nn.functional as F

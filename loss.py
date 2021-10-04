@@ -1,4 +1,3 @@
-__author__ = 'yihanjiang'
 
 import torch
 import torch.nn as nn

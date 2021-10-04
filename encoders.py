@@ -347,27 +347,18 @@ class RNN_encoder_rate_high(ENCBase):
         x_tx = self.enc_linear_final(x_tx)
         permuted = x_tx.permute(0, 2, 1) #(bs,n*block_length,1)
 
-        b1=(permuted<0) & (permuted>-2)
-        b2=(permuted>=0) & (permuted<2)
-        b3 = (permuted<=-2) | (permuted>=2)
-        a1 = permuted-1000
-        a2 = permuted+1000
-        a3 = permuted
+        #for binary code
+        # b1 = (permuted<0) & (permuted>-2)
+        # b2 = (permuted>=0) & (permuted<2)
+        # b3 = (permuted<=-2) | (permuted>=2)
+        # a1 = permuted-1000
+        # a2 = permuted+1000
+        # a3 = permuted
+        # code = a1*b1 + a2*b2 + a3 * b3
+        #codes_after = torch.tanh(code)
 
-        code = a1*b1 + a2*b2 + a3 * b3
+        codes_after = self.power_constraint(permuted)
 
-        #codes_after_nopwr = permuted
-        codes_after = torch.tanh(code)
-        #codes_after = (F.tanh(permuted)+1)/2
-        #codes_after = torch.sign(permuted)
-        #codes_after = (torch.sign(permuted)+1)/2
-        #codes_after = self.power_constraint(permuted)
-
-        # #print("codes before dense 2, no power normalize:", codes_before_nopwr)
-        # print("codes before dense 2:", codes_before)
-        # # # print("codes after dense 2, no power normalize:", codes_after_nopwr)
-        # test=codes_after.permute(0, 2, 1)
-        # print("codes after dense 2:", test)
 
         return codes_after
 
@@ -390,14 +381,9 @@ class traditional_enc(ENCBase):
 
         puncpat=puncpat.reshape(1,4)
         inputs=inputs.reshape(num_block, self.args.code_rate_k * block_len, 1)
-        #x=inputs.numpy()
-        # X_train_raw = np.random.randint(0, 2, block_len * num_block*2)
-        # X_train_raw = X_train_raw.reshape((num_block,2*block_len, 1))
 
         for idx in range(num_block):
             xx = cc.conv_encode(inputs[idx, :, 0], trellis, termination='cont',puncture_matrix=puncpat)
-            #xx = cc.conv_encode(inputs[idx, :, 0], trellis, termination='cont')
-            #xx = cc.conv_encode(inputs[idx,:,0],trellis)
 
             xx = xx[:-block_len]
             xx = xx.reshape((block_len, self.args.code_rate_n))

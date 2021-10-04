@@ -1,7 +1,3 @@
-__author__ = 'yihanjiang'
-# update 10/18/2019, code to replicate TurboAE paper in NeurIPS 2019.
-# Tested on PyTorch 1.0.
-# TBD: remove all non-TurboAE related functions.
 
 import torch
 import torch.optim as optim
@@ -59,9 +55,9 @@ if __name__ == '__main__':
     identity = str(np.random.random())[2:8]
     print('[ID]', identity)
 
-    # # put all printed things to log file
-    # logfile = open('./logs/'+identity+'_log.txt', 'a')
-    # sys.stdout = Logger('./logs/'+identity+'_log.txt', sys.stdout)
+    # put all printed things to log file
+    logfile = open('./logs/'+identity+'_log.txt', 'a')
+    sys.stdout = Logger('./logs/'+identity+'_log.txt', sys.stdout)
 
     args = get_args()
     print(args)
